@@ -39,6 +39,7 @@ jobs:
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
             --stack-name hn-telegram-bot \
             --capabilities CAPABILITY_IAM \
+            --resolve-s3 \
             --parameter-overrides \
               TelegramBotToken=${{ secrets.TELEGRAM_BOT_TOKEN }} \
               TelegramChatId=${{ secrets.TELEGRAM_CHAT_ID }}
