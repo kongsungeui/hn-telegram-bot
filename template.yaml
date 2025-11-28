@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Hacker News Telegram Alert Bot
+
+Parameters:
+  TelegramBotToken:
+    Type: String
+    NoEcho: true
+    Description: Telegram Bot Token from BotFather
+  TelegramChatId:
+    Type: String
+    Description: Telegram Chat ID to send messages to
+
+Globals:
+  Function:
+    Timeout: 60
+    Runtime: nodejs20.x
+    MemorySize: 256
+
+Resources:
+  HNAlertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: hn-telegram-bot
+      CodeUri: src/
+      Handler: index.handler
+      Environment:
+        Variables:
+          TELEGRAM_BOT_TOKEN: !Ref TelegramBotToken
+          TELEGRAM_CHAT_ID: !Ref TelegramChatId
+          TABLE_NAME: !Ref SeenStoriesTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SeenStoriesTable
+      Events:
+        ScheduleEvent:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 hour)
+            Description: Check HN every hour
+            Enabled: true
+
+  SeenStoriesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: hn-telegram-bot-seen
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: storyId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: storyId
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+Outputs:
+  FunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt HNAlertFunction.Arn
+  TableName:
+    Description: DynamoDB Table Name
+    Value: !Ref SeenStoriesTable

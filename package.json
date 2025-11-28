@@ -1,0 +1,19 @@
+{
+  "name": "hn-telegram-bot",
+  "version": "1.0.0",
+  "description": "Hacker News Telegram Alert Bot",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node src/test.js",
+    "local": "node src/local.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.500.0",
+    "@aws-sdk/lib-dynamodb": "^3.500.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
