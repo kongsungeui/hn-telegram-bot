@@ -22,8 +22,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: hn-telegram-bot
-      CodeUri: src/
-      Handler: index.handler
+      CodeUri: ./
+      Handler: src/index.handler
       Environment:
         Variables:
           TELEGRAM_BOT_TOKEN: !Ref TelegramBotToken
